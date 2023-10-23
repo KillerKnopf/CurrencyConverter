@@ -1,32 +1,10 @@
-# Prerequisites
-*.d
+# Compiled files
+bin/
+# Compilation intermediates
+bin-int/
+# Visual Studio settings
+.vs/
+*.user
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
-*.out
-*.app
+# Containing secret information e.g. the api key to freecurrencyapi.com
+.env
