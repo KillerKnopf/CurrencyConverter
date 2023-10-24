@@ -30,7 +30,7 @@ using json = nlohmann::json;
 
 using CurrencyConverter::Currency;
 
-bool check_api_status(string api_key);
+void check_api_status(string api_key);
 
 // Some function were i tested how external libraries get used
 void test_http_requests();
