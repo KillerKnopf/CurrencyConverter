@@ -21,6 +21,9 @@
     <ClInclude Include="src\Currency.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\httplib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp">
@@ -29,5 +32,8 @@
     <ClCompile Include="src\Currency.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

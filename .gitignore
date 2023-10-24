@@ -8,3 +8,7 @@ bin-int/
 
 # Containing secret information e.g. the api key to freecurrencyapi.com
 .env
+
+# NuGet packages
+packages/
+CurrencyConverter/packages.config
