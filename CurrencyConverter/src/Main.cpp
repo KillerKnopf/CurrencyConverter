@@ -84,7 +84,7 @@ int main(int argc, char* argv[]) {
 		return 1;
 	}
 
-	// Variable for api key
+	// Get api_key from command line arguments
 	string api_key = argv[1];
 	cout << "\n\nargv[1] -> " << argv[1] << '\n';
 
@@ -96,15 +96,68 @@ int main(int argc, char* argv[]) {
 	// Map storing available currencies (key: currency->code, Currency object)
 	map<string, Currency*> currencies;
 
+	
+	bool unreachable = check_api_status(api_key);
+	if (unreachable)
+	{
+		std::cout << "API endpoint unavailable. Terminating program.";
+		return EXIT_FAILURE;
+	}
+
+
+
+
+	// Testing stuff
+	//test_json_parsing();
+	// test_http_requests();
+
+	std::cout << "\n\n";
+	return 0;
+}
+
+bool check_api_status(string api_key)
+{
 	try
 	{
-		// That's all that is needed to do cleanup of used resources (RAII style).
 		curlpp::initialize();
 
-		// Our request to be sent.
-		curlpp::Easy myRequest;
+		// Set target url of request to the status endpoint.
+		curlpp::Easy request;
+		request.setOpt(new Url("https://api.freecurrencyapi.com/v1/status"));
 
-		// Set the URL.
+		// Add headers. Here only containing the api key.
+		std::list<string> headers {};
+		headers.push_back("apikey: " + api_key);
+
+		request.setOpt(new HttpHeader(headers));
+
+		// Send request and get a result.
+		// By default the result goes to standard output.
+		request.perform();
+	}
+
+	catch (curlpp::RuntimeError& e)
+	{
+		std::cout << e.what() << std::endl;
+	}
+
+	catch (curlpp::LogicError& e)
+	{
+		std::cout << e.what() << std::endl;
+	}
+
+	curlpp::terminate();
+
+	return false;
+}
+
+void test_http_requests()
+{
+	try
+	{
+		curlpp::initialize();
+
+		curlpp::Easy myRequest;
 		myRequest.setOpt<curlpp::options::Url>("https://jsonplaceholder.typicode.com/posts");
 
 		// Send request and get a result.
@@ -123,18 +176,7 @@ int main(int argc, char* argv[]) {
 	}
 
 	curlpp::terminate();
-
-
-
-
-
-
-	// Testing stuff
-	//test_json_parsing();
-	return 0;
 }
-
-
 
 void test_json_parsing() {
 	// Test string as it can come from the api
