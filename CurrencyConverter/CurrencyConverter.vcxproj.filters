@@ -24,12 +24,24 @@
     <ClInclude Include="src\httplib.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\AppState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Account.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Currency.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AppState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Account.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

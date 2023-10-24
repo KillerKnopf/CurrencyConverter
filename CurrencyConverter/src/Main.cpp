@@ -6,105 +6,108 @@ using namespace curlpp::options;
 
 int main(int argc, char* argv[])
 {
+	// Function to get the window console to display unicode characters
+	// In this case used to write currency symbols to the console
+	SetConsoleOutputCP(CP_UTF8);
+
+	// Steps needed to be taken
+	// API documentation available here: https://freecurrencyapi.com/docs/
+	/*
+		1. Parse command line arguments
+			1.1 get api key
+		2. Send GET request to https://api.freecurrencyapi.com/v1/status with api key in header
+		3. Handle response (list of possible responses https://freecurrencyapi.com/docs/status-codes)
+			2.1 Handle errors - print useful error message
+			2.2 If correct move forward to menu
+
+		4. Menu
+		- Display api information (returned in success response above)
+		- Display list of options to choose:
+			1. List available currencies
+				Check if list of currencies has already been fetched
+					First check process memory
+						If data exists and is new enough return
+					Then check for file
+						If file exist check if it isn't too old
+							If data is new enough load into process memory
+							Return
+				If no valid data was found then fetch new data from https://api.freecurrencyapi.com/v1/currencies
+					Store fetched data in process memory and file
+					Return
+				Display data from process memory
+			2. Get exchange rates using latest rate
+				>> Ask for base currency
+				Check if base currency data has already been fetched and the stored data is new enough
+					Check process memory
+						Check if key in unordered map exists
+						Check if data is new enough
+						If valid data found return
+					Check file (filename: $(BaseCurrency)_YYYY-MM-DDTHH:MM:SSZ)
+						Check if file exists
+						Then check if datetime of filename is new enough
+						If valid data found load into process memory
+						Return
+					If no valid data was found in memory and file then fetch new data from https://api.freecurrencyapi.com/v1/latest
+						Store fetched data in process memory and file using current timestamp
+						Return
+				>> Ask for all target currencies to be exchanged into
+				>> Ask for the amount of base currency that should be exchanged
+				Display table with row for each target currency
+					Columns:
+						Name of target currency
+						Exchange rate to target currency (read from process memory)
+						Exchanged amount (calculate by multiplying value to be exchanged with exchange rate)
+			3. Get exchange rates from historical rates
+				>> Ask for base currency
+				>> Ask for date from which onwards data should be fetched (YYYY-MM-DD)
+				Check if base currency data has already been fetched and the stored data is old enough
+					Check file (filename: Historical\$(BaseCurrency)_YYYY-MM-DD)
+						Check if file exists
+						Then check if datetime of filename are old enough (file date before input date)
+							If no valid data found then fetch new data from https://api.freecurrencyapi.com/v1/historical
+							Store fetched data
+				Tell user path to file (filename: Historical\$(BaseCurrency)_YYYY-MM-DD)
+	*/
+
+	// ---------- Program Initialization ----------
+
+	// Instantiate AppState
+	CurrencyConverter::AppState app_state = CurrencyConverter::AppState();
+
+	// Command line parameter parsing
+	if (argc < 2)
+	{
+		// No api key provided
+		std::cerr << "\nNo API KEY provided!\n";
+		std::cerr << "Usage: " << "CurrencyConverter.exe" << " <API_KEY>" << std::endl;
+		return 1;
+	}
+	if (argc > 2)
+	{
+		// Too many arguments
+		std::cerr << "\nToo many arguments provided!\n";
+		std::cerr << "Usage: " << "CurrencyConverter.exe" << " <API_KEY>" << std::endl;
+		return 1;
+	}
+
+	// Get api_key from command line arguments
+	app_state.api_key = argv[1];
+	app_state.currencies;
+
 	try
 	{
-		// Function to get the window console to display unicode characters
-		// In this case used to write currency symbols to the console
-		SetConsoleOutputCP(CP_UTF8);
+		// Checks availability of API endpoint status.
+		// If status is available then the account data gets written to app_state->account.
+		check_api_status(app_state);
 
-		// Steps needed to be taken
-		// API documentation available here: https://freecurrencyapi.com/docs/
-		/*
-			1. Parse command line arguments
-				1.1 get api key
-			2. Send GET request to https://api.freecurrencyapi.com/v1/status with api key in header
-			3. Handle response (list of possible responses https://freecurrencyapi.com/docs/status-codes)
-				2.1 Handle errors - print useful error message
-				2.2 If correct move forward to menu
+		std::cout << "\n--------------------------------\n" << app_state.account.to_string() << "--------------------------------\n";
 
-			4. Menu
-			- Display api information (returned in success response above)
-			- Display list of options to choose:
-				1. List available currencies
-					Check if list of currencies has already been fetched
-						First check process memory
-							If data exists and is new enough return
-						Then check for file
-							If file exist check if it isn't too old
-								If data is new enough load into process memory
-								Return
-					If no valid data was found then fetch new data from https://api.freecurrencyapi.com/v1/currencies
-						Store fetched data in process memory and file
-						Return
-					Display data from process memory
-				2. Get exchange rates using latest rate
-					>> Ask for base currency
-					Check if base currency data has already been fetched and the stored data is new enough
-						Check process memory
-							Check if key in unordered map exists
-							Check if data is new enough
-							If valid data found return
-						Check file (filename: $(BaseCurrency)_YYYY-MM-DDTHH:MM:SSZ)
-							Check if file exists
-							Then check if datetime of filename is new enough
-							If valid data found load into process memory
-							Return
-						If no valid data was found in memory and file then fetch new data from https://api.freecurrencyapi.com/v1/latest
-							Store fetched data in process memory and file using current timestamp
-							Return
-					>> Ask for all target currencies to be exchanged into
-					>> Ask for the amount of base currency that should be exchanged
-					Display table with row for each target currency
-						Columns:
-							Name of target currency
-							Exchange rate to target currency (read from process memory)
-							Exchanged amount (calculate by multiplying value to be exchanged with exchange rate)
-				3. Get exchange rates from historical rates
-					>> Ask for base currency
-					>> Ask for date from which onwards data should be fetched (YYYY-MM-DD)
-					Check if base currency data has already been fetched and the stored data is old enough
-						Check file (filename: Historical\$(BaseCurrency)_YYYY-MM-DD)
-							Check if file exists
-							Then check if datetime of filename are old enough (file date before input date)
-								If no valid data found then fetch new data from https://api.freecurrencyapi.com/v1/historical
-								Store fetched data
-					Tell user path to file (filename: Historical\$(BaseCurrency)_YYYY-MM-DD)
-		*/
+		// TODO: fetch available currencies
 
-		// ---------- Program Initialization ----------
-
-		// Command line parameter parsing
-		if (argc < 2)
-		{
-			// No api key provided
-			std::cerr << "\nNo API KEY provided!\n";
-			std::cerr << "Usage: " << "CurrencyConverter.exe" << " <API_KEY>" << std::endl;
-			return 1;
-		}
-		if (argc > 2)
-		{
-			// Too many arguments
-			std::cerr << "\nToo many arguments provided!\n";
-			std::cerr << "Usage: " << "CurrencyConverter.exe" << " <API_KEY>" << std::endl;
-			return 1;
-		}
-
-		// Get api_key from command line arguments
-		string api_key = argv[1];
-		cout << "\n\nargv[1] -> " << argv[1] << '\n';
-
-		// Map was choosen over unordered_map because I want the currencies to be ordered alphabetically
-		// and any map in this program will never have more than 32 entries.
-		// That means the difference in time complexity (O(log n) vs O(1)) isn't a significant difference for this program.
-		// Even if I switch to Currencyapi.com as a data source these maps won't have more than 172 entries.
-
-		// Map storing available currencies (key: currency->code, Currency object)
-		map<string, Currency*> currencies;
-
-
-		check_api_status(api_key);
-
-
+		// TODO: main menu
+		// 1. List available currencies
+		// 2. Exchange money
+		// 3. Get historical exchange rates
 
 
 		// Testing stuff
@@ -113,15 +116,17 @@ int main(int argc, char* argv[])
 	}
 	catch (std::exception e)
 	{
-
+		// TODO: exception handling
 	}
+
 	std::cout << "\n\n";
 	return 0;
 }
 
-void check_api_status(string api_key)
+void check_api_status(CurrencyConverter::AppState& app_state)
 {
-	curlpp::initialize();
+	// Class that handles memory initialization and deletion.
+	curlpp::Cleanup cleaner;
 
 	// Set target url of request to the status endpoint.
 	curlpp::Easy request;
@@ -129,7 +134,7 @@ void check_api_status(string api_key)
 
 	// Add headers. Here only containing the api key.
 	std::list<string> headers {};
-	headers.push_back("apikey: " + api_key);
+	headers.push_back("apikey: " + app_state.api_key);
 
 	request.setOpt(new HttpHeader(headers));
 
@@ -150,9 +155,17 @@ void check_api_status(string api_key)
 		// Error 404 may happen if the url got changed.
 		switch (response_code)
 		{
-			// Happy case. Parse data and return true.
+			// Happy case. Write received data to AppState and return.
 			case 200:
-				curlpp::terminate();
+				// Example response body
+				// {"account_id":239344465066725376,"quotas":{"month":{"total":5000,"used":0,"remaining":5000},"grace":{"total":0,"used":0,"remaining":0}}}
+				app_state.account.account_id = "239344465066725376";
+				app_state.account.quotas.total = 5000;
+				app_state.account.quotas.used = 5000;
+				app_state.account.quotas.remaining = 5000;
+				app_state.account.grace.total = 0;
+				app_state.account.grace.used = 0;
+				app_state.account.grace.remaining = 0;
 				return;
 			// Invalid api key. This should trigger a program termination.
 			case 401:

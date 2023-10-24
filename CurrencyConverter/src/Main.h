@@ -20,6 +20,7 @@
 #include <curlpp/OptionBase.hpp>
 
 #include "Currency.h"
+#include "AppState.h"
 
 
 using std::map;
@@ -30,7 +31,7 @@ using json = nlohmann::json;
 
 using CurrencyConverter::Currency;
 
-void check_api_status(string api_key);
+void check_api_status(CurrencyConverter::AppState& app_state);
 
 // Some function were i tested how external libraries get used
 void test_http_requests();

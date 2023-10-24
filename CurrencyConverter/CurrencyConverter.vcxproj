@@ -98,11 +98,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Account.h" />
+    <ClInclude Include="src\AppState.h" />
     <ClInclude Include="src\Currency.h" />
     <ClInclude Include="src\httplib.h" />
     <ClInclude Include="src\Main.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Account.cpp" />
+    <ClCompile Include="src\AppState.cpp" />
     <ClCompile Include="src\Currency.cpp" />
     <ClCompile Include="src\Main.cpp" />
   </ItemGroup>
