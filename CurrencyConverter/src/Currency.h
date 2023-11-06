@@ -3,6 +3,7 @@
 #include <map>
 #include <iostream>
 #include <windows.h>
+#include <iomanip>
 
 namespace CurrencyConverter
 {
@@ -10,10 +11,11 @@ namespace CurrencyConverter
 
 	class Currency {
 	public:
+		Currency();
 		Currency(string symbol, string name, string symbol_native, uint8_t decimal_digits, uint8_t rounding, string code, string name_plural);
 		~Currency();
 
-		void debug_print();
+		void print();
 
 		string symbol;
 		string name;
@@ -23,6 +25,6 @@ namespace CurrencyConverter
 		string code;
 		string name_plural;
 
-		std::map<string, float> exhange_rates;
+		std::map<string, float> exchange_rates;
 	};
 }

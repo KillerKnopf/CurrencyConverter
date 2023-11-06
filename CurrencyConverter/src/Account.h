@@ -5,6 +5,7 @@ using std::string;
 
 namespace CurrencyConverter
 {
+	// Quota is the number of requests can be made each month
 	class Quotas {
 	public:
 		Quotas();
@@ -18,6 +19,8 @@ namespace CurrencyConverter
 		uint32_t remaining;
 	};
 
+	// Grace are the available requests each month above the Quota limit
+	// Not existing on freecurrencyapi.com, but in here because I may add the ability to fetch from currencyapi.com
 	class Grace {
 	public:
 		Grace();

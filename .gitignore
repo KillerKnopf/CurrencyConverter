@@ -12,3 +12,6 @@ bin-int/
 # NuGet packages
 packages/
 CurrencyConverter/packages.config
+
+# curlpp binaries
+/curlpp
